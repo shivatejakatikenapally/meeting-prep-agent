@@ -1,0 +1,49 @@
+{
+  "contacts": [
+    {
+      "bank_id": "priya-desai-meridian-foods",
+      "name": "Priya Desai",
+      "company": "Meridian Foods",
+      "meetings": [
+        {
+          "id": "priya-m1",
+          "date": "2026-09-02",
+          "transcript": "Discovery call with Priya Desai, Director of Operations at Meridian Foods. She manages a 40-person logistics team and is evaluating tools to track cold-chain shipments in real time. No budget or timeline discussed yet. Her team currently uses spreadsheets and misses spoilage events until it's too late."
+        },
+        {
+          "id": "priya-m2",
+          "date": "2026-09-09",
+          "transcript": "Product demo with Priya. She was enthusiastic about the live temperature-tracking dashboard and asked to see it twice. She said the multi-step approval workflow for flagging a shipment felt clunky and wants it simplified. She reports directly to the CFO, who is very cost-focused this quarter."
+        },
+        {
+          "id": "priya-m3",
+          "date": "2026-09-16",
+          "transcript": "Pricing call. Priya pushed hard on cost given her CFO's scrutiny. We offered an 8 percent loyalty discount contingent on signing by end of month. Before discussing final numbers, she asked twice whether the platform holds FSMA 204 cold-chain compliance readiness. She raises compliance before she'll engage on price. We said we'd confirm and follow up."
+        },
+        {
+          "id": "priya-m4",
+          "date": "2026-09-30",
+          "transcript": "Follow-up call. The draft contract Priya received did not reflect the 8 percent discount from the September 16 call and she sounded frustrated about having to raise it again. She also still hasn't gotten a straight answer on the FSMA 204 compliance question and needs it before taking this to her CFO."
+        }
+      ]
+    },
+    {
+      "bank_id": "marcus-chen-techflow",
+      "name": "Marcus Chen",
+      "company": "TechFlow Inc.",
+      "meetings": [
+        {
+          "id": "marcus-m1",
+          "date": "2026-09-20",
+          "transcript": "Discovery call with Marcus, the CTO at TechFlow. He is highly technical and very skeptical about AI hallucinations. He strictly prefers bullet points in communication and hates marketing fluff. He explicitly asked how we handle data privacy and tenant isolation. We promised to send him our SOC2 compliance report by Friday. He mentioned their current homegrown solution breaks every two weeks and he's fed up with maintenance."
+        }
+      ]
+    },
+    {
+      "bank_id": "sarah-jenkins-greenenergy",
+      "name": "Sarah Jenkins",
+      "company": "GreenEnergy Corp",
+      "meetings": []
+    }
+  ]
+}

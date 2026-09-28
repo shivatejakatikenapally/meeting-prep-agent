@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recall — prep</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button onclick="document.body.classList.toggle('dark-mode')" style="position: absolute; top: 15px; right: 20px; z-index: 1000; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--muted); background: var(--paper); color: var(--ink); cursor: pointer;">🌓 Toggle Theme</button>
+<div class="layout">
+  <aside class="sidebar" id="contact-list"></aside>
+  <section class="detail">
+    <div class="tabs">
+      <div class="tab active" data-tab="brief">Briefing</div>
+      <div class="tab" data-tab="memory">Memory engine</div>
+      <div class="tab" data-tab="ingest">Add Notes</div>
+    </div>
+    <div id="tab-brief"></div>
+    <div id="tab-memory" style="display:none"></div>
+    <div id="tab-ingest" style="display:none" class="ingest-box">
+      <h3 style="margin-top:0;">Ingest New Meeting Transcript</h3>
+      <p style="color: var(--muted); font-size: 0.9em; margin-bottom: 15px;">Paste notes or transcripts from your latest meeting here. The Memory Engine will process it and update your brief.</p>
+      <textarea id="ingest-text" rows="10" style="width: 100%; padding: 10px; border-radius: 4px; font-family: inherit; margin-bottom: 10px;" placeholder="e.g. Discussed pricing for Q4. They need a 10% discount to move forward. Follow up next week with a revised proposal..."></textarea>
+      <button id="ingest-btn" onclick="submitIngest()" style="padding: 10px 20px; cursor: pointer; background: var(--ink); color: var(--paper); border: none; border-radius: 4px;">Save to Memory</button>
+      <p id="ingest-status" style="margin-top: 10px; font-size: 0.9em;"></p>
+    </div>
+  </section>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

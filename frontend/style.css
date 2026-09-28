@@ -1,0 +1,84 @@
+:root {
+  --paper: #FAF9F6;
+  --ink: #1C1B18;
+  --muted: #6B6A63;
+  --line: #D8D6CD;
+  --accent: #B8860B;
+  --radius: 6px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+  line-height: 1.5;
+}
+.site-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.5rem 2rem; border-bottom: 1px solid var(--line);
+}
+.wordmark { font-weight: 600; font-size: 1.1rem; }
+.nav-link {
+  color: var(--ink); text-decoration: none; border: 1px solid var(--line);
+  padding: 0.5rem 1rem; border-radius: var(--radius);
+}
+.hero { max-width: 760px; margin: 0 auto; padding: 4rem 2rem; }
+.hero h1 { font-size: 2rem; font-weight: 600; max-width: 20ch; }
+.compare { display: flex; gap: 1.5rem; margin: 2.5rem 0; }
+.prep-card {
+  flex: 1; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.25rem; background: #fff;
+}
+.prep-card--after { border-color: var(--accent); }
+.prep-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--muted); margin: 0 0 0.5rem; }
+.hero-sub { color: var(--muted); }
+button, .btn {
+  background: var(--ink); color: var(--paper); border: none;
+  border-radius: var(--radius); padding: 0.75rem 1.25rem; font-size: 0.95rem; cursor: pointer;
+}
+.layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+.sidebar { border-right: 1px solid var(--line); padding: 1.5rem; }
+.contact-item { padding: 0.75rem; border-radius: var(--radius); cursor: pointer; }
+.contact-item.active { background: var(--line); }
+.detail { padding: 2rem; max-width: 640px; }
+.tabs { display: flex; gap: 1rem; border-bottom: 1px solid var(--line); margin-bottom: 1.5rem; }
+.tab { padding-bottom: 0.5rem; cursor: pointer; color: var(--muted); }
+.tab.active { color: var(--ink); border-bottom: 2px solid var(--accent); }
+.recalled { border-left: 2px solid var(--accent); padding-left: 0.75rem; }
+
+.feedback-box {
+  background: var(--line); 
+  padding: 15px; 
+  border-radius: 6px;
+}
+.feedback-box input {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--muted);
+}
+.ingest-box textarea {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--muted);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121212;
+    --ink: #e0e0e0;
+    --muted: #888888;
+    --line: #2a2a2a;
+    --accent: #FFC107;
+  }
+  .prep-card { background: #1e1e1e; }
+}
+
+body.dark-mode {
+  --paper: #121212;
+  --ink: #e0e0e0;
+  --muted: #888888;
+  --line: #2a2a2a;
+  --accent: #FFC107;
+}
+body.dark-mode .prep-card { background: #1e1e1e; }
