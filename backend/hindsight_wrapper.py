@@ -12,11 +12,11 @@ def get_client():
         _client = Hindsight(**kwargs)
     return _client
 
-def retain_meeting(bank_id: str, content: str, document_id: str):
-    return get_client().retain(bank_id=bank_id, content=content, document_id=document_id)
+async def retain_meeting(bank_id: str, content: str, document_id: str):
+    return await get_client().aretain(bank_id=bank_id, content=content, document_id=document_id)
 
-def recall_for_contact(bank_id: str, query: str):
-    return get_client().recall(bank_id=bank_id, query=query)
+async def recall_for_contact(bank_id: str, query: str):
+    return await get_client().arecall(bank_id=bank_id, query=query)
 
-def reflect_for_contact(bank_id: str, query: str):
-    return get_client().reflect(bank_id=bank_id, query=query)
+async def reflect_for_contact(bank_id: str, query: str):
+    return await get_client().areflect(bank_id=bank_id, query=query)

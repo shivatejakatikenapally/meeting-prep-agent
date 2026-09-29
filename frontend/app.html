@@ -4,29 +4,89 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Recall — prep</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <button onclick="document.body.classList.toggle('dark-mode')" style="position: absolute; top: 15px; right: 20px; z-index: 1000; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--muted); background: var(--paper); color: var(--ink); cursor: pointer;">🌓 Toggle Theme</button>
 <div class="layout">
-  <aside class="sidebar" id="contact-list"></aside>
+  <aside class="sidebar">
+    <div style="padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--line);">
+      <button onclick="document.getElementById('new-contact-modal').style.display='flex'" class="btn" style="width:100%; font-size: 0.9em; padding: 8px;">+ New Contact</button>
+    </div>
+    <div id="contact-list"></div>
+  </aside>
   <section class="detail">
     <div class="tabs">
       <div class="tab active" data-tab="brief">Briefing</div>
-      <div class="tab" data-tab="memory">Memory engine</div>
-      <div class="tab" data-tab="ingest">Add Notes</div>
+      <div class="tab" data-tab="record">Record Meeting</div>
+      <div class="tab" data-tab="transcript">Add Transcript</div>
+      <div class="tab" data-tab="logs">Transcript Logs</div>
     </div>
-    <div id="tab-brief"></div>
-    <div id="tab-memory" style="display:none"></div>
-    <div id="tab-ingest" style="display:none" class="ingest-box">
-      <h3 style="margin-top:0;">Ingest New Meeting Transcript</h3>
-      <p style="color: var(--muted); font-size: 0.9em; margin-bottom: 15px;">Paste notes or transcripts from your latest meeting here. The Memory Engine will process it and update your brief.</p>
-      <textarea id="ingest-text" rows="10" style="width: 100%; padding: 10px; border-radius: 4px; font-family: inherit; margin-bottom: 10px;" placeholder="e.g. Discussed pricing for Q4. They need a 10% discount to move forward. Follow up next week with a revised proposal..."></textarea>
-      <button id="ingest-btn" onclick="submitIngest()" style="padding: 10px 20px; cursor: pointer; background: var(--ink); color: var(--paper); border: none; border-radius: 4px;">Save to Memory</button>
-      <p id="ingest-status" style="margin-top: 10px; font-size: 0.9em;"></p>
+    <div class="tab-panel active" id="tab-brief"></div>
+
+    <div class="tab-panel" id="tab-record">
+      <h3 style="margin-top:0;">Record Meeting</h3>
+      <p style="color: var(--muted); font-size: 0.9em; margin-bottom: 15px;">Record a meeting or upload a recording. It will be automatically transcribed and saved to memory.</p>
+
+      <div class="recorder-section">
+        <video id="camera-preview" autoplay muted playsinline></video>
+        <div class="record-controls">
+          <button id="record-btn" onclick="toggleRecording()" class="record-btn">
+            <span class="record-dot"></span>
+            <span id="record-btn-text">Start Recording</span>
+          </button>
+          <span id="record-timer" class="record-timer" style="display:none">00:00</span>
+        </div>
+      </div>
+
+      <div class="upload-divider"><span>or upload a file</span></div>
+
+      <div class="upload-section">
+        <label class="file-upload-label">
+          📁 Choose Audio / Video File
+          <input type="file" id="upload-file" accept="audio/*,video/*" onchange="handleFileUpload(this)" style="display:none" />
+        </label>
+        <span id="file-name" style="margin-left: 10px; color: var(--muted); font-size: 0.9em;"></span>
+      </div>
+
+      <div id="transcription-status" style="margin-top: 20px;"></div>
+
+      <div id="transcript-result" style="display:none; margin-top: 20px;">
+        <h3 style="margin-top: 0;">Transcript</h3>
+        <div id="transcript-text" class="transcript-text"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-transcript">
+      <h3 style="margin-top:0;">Add Past Meeting Transcript</h3>
+      <p style="color: var(--muted); font-size: 0.9em; margin-bottom: 15px;">Paste a transcript or notes from a past meeting. The memory engine will process it and your next brief will reflect this information.</p>
+      <textarea id="transcript-input" rows="12" class="transcript-textarea" placeholder="e.g. Discovery call with Priya Desai on Sep 15. She manages a 40-person logistics team and needs real-time cold-chain tracking. No budget discussed yet. She currently uses spreadsheets and misses spoilage events..."></textarea>
+      <div style="display: flex; align-items: center; gap: 15px; margin-top: 12px;">
+        <button id="save-transcript-btn" onclick="submitTranscript()" class="btn">Save to Memory</button>
+        <span id="transcript-save-status" style="font-size: 0.9em;"></span>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-logs">
+      <h3 style="margin-top:0;">Past Transcript Logs</h3>
+      <p style="color: var(--muted); font-size: 0.9em; margin-bottom: 15px;">View raw transcripts and notes that have been saved to this contact's memory.</p>
+      <div id="logs-container"></div>
     </div>
   </section>
 </div>
-<script src="app.js"></script>
+
+<!-- Modal for New Contact -->
+<div id="new-contact-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+  <div style="background:var(--paper); padding:20px; border-radius:var(--radius); width:300px; border:1px solid var(--line);">
+    <h3 style="margin-top:0">Add New Contact</h3>
+    <input type="text" id="new-contact-name" placeholder="Name" style="width:100%; padding:8px; margin-bottom:10px; border-radius:4px; border:1px solid var(--muted); background:var(--paper); color:var(--ink);">
+    <input type="text" id="new-contact-company" placeholder="Company" style="width:100%; padding:8px; margin-bottom:15px; border-radius:4px; border:1px solid var(--muted); background:var(--paper); color:var(--ink);">
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button onclick="document.getElementById('new-contact-modal').style.display='none'" class="btn" style="background:var(--muted)">Cancel</button>
+      <button onclick="saveNewContact()" class="btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=4"></script>
 </body>
 </html>
