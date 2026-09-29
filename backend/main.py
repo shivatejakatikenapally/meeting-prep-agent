@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import uuid
 from hindsight_wrapper import recall_for_contact, reflect_for_contact, retain_meeting
-from llm import build_brief, transcribe_media
+from llm import build_brief, transcribe_media, draft_followup_email
 
 app = FastAPI()
 
@@ -86,6 +86,50 @@ def get_transcripts(bank_id: str):
     with open(TRANSCRIPTS_FILE, "r") as f:
         data = json.load(f)
     return data.get(bank_id, [])
+
+@app.get("/api/email/{bank_id}")
+async def get_email_draft(bank_id: str):
+    contact = CONTACTS.get(bank_id)
+    if not contact:
+        raise HTTPException(404, "unknown contact")
+    
+    with open(TRANSCRIPTS_FILE, "r") as f:
+        data = json.load(f)
+    
+    transcripts = data.get(bank_id, [])
+    if not transcripts:
+        raise HTTPException(404, "No transcripts available to draft an email from.")
+    
+    latest = transcripts[-1]["text"]
+    draft = await asyncio.to_thread(draft_followup_email, contact["name"], latest)
+    return {"email": draft}
+
+@app.post("/api/calendar/sync")
+def sync_calendar():
+    # Mocking two calendar meetings
+    mock_meetings = [
+        {"name": "Alice Wonderland", "company": "MadHatter Co"},
+        {"name": "Bruce Wayne", "company": "Wayne Enterprises"}
+    ]
+    added = []
+    for m in mock_meetings:
+        import re
+        b_id = re.sub(r'[^a-z0-9-]', '-', m["name"].lower() + "-" + m["company"].lower())
+        b_id = re.sub(r'-+', '-', b_id).strip('-')
+        if b_id not in CONTACTS:
+            new_contact = {"bank_id": b_id, "name": m["name"], "company": m["company"]}
+            CONTACTS[b_id] = new_contact
+            added.append(new_contact)
+            
+            # Save to mock_data.json
+            mock_file = os.path.join(os.path.dirname(__file__), "mock_data.json")
+            with open(mock_file, "r") as f:
+                data = json.load(f)
+            data["contacts"].append(new_contact)
+            with open(mock_file, "w") as f:
+                json.dump(data, f, indent=2)
+                
+    return {"status": "ok", "synced": added}
 
 class NewContactRequest(BaseModel):
     name: str

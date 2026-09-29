@@ -10,10 +10,17 @@
 <button onclick="document.body.classList.toggle('dark-mode')" style="position: absolute; top: 15px; right: 20px; z-index: 1000; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--muted); background: var(--paper); color: var(--ink); cursor: pointer;">🌓 Toggle Theme</button>
 <div class="layout">
   <aside class="sidebar">
-    <div style="padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--line);">
-      <button onclick="document.getElementById('new-contact-modal').style.display='flex'" class="btn" style="width:100%; font-size: 0.9em; padding: 8px;">+ New Contact</button>
+    <div style="padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--line); display: flex; gap: 10px;">
+      <button onclick="document.getElementById('new-contact-modal').style.display='flex'" class="btn" style="flex:1; font-size: 0.85em; padding: 8px;">+ New</button>
+      <button onclick="syncCalendar(this)" class="btn" style="flex:1; font-size: 0.85em; padding: 8px; background: var(--muted); border-color: var(--muted);">📅 Sync</button>
     </div>
-    <div id="contact-list"></div>
+    <div id="contact-list" style="overflow-y: auto; flex-grow: 1;"></div>
+    
+    <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid var(--line); font-size: 0.8em; color: var(--muted); text-align: center; line-height: 1.6;">
+      <div>Powered by</div>
+      <div style="font-weight: 600; color: var(--ink);">🧠 Google Gemini AI</div>
+      <div style="font-weight: 600; color: var(--ink);">🔍 Hindsight Vector Engine</div>
+    </div>
   </aside>
   <section class="detail">
     <div class="tabs">
@@ -67,8 +74,14 @@
       </div>
     </div>
     <div class="tab-panel" id="tab-logs">
-      <h3 style="margin-top:0;">Past Transcript Logs</h3>
-      <p style="color: var(--muted); font-size: 0.9em; margin-bottom: 15px;">View raw transcripts and notes that have been saved to this contact's memory.</p>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div>
+          <h3 style="margin-top:0; margin-bottom: 5px;">Past Transcript Logs</h3>
+          <p style="color: var(--muted); font-size: 0.9em; margin: 0;">View raw transcripts and notes that have been saved to memory.</p>
+        </div>
+        <button onclick="draftEmail(this)" class="btn" style="background: var(--accent); color: #000;">✉️ Draft Follow-up Email</button>
+      </div>
+      <div id="email-draft-container" style="display:none; background: var(--paper); padding: 15px; border-radius: var(--radius); border: 1px dashed var(--accent); margin-bottom: 20px;"></div>
       <div id="logs-container"></div>
     </div>
   </section>
@@ -87,6 +100,6 @@
   </div>
 </div>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

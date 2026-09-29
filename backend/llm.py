@@ -19,12 +19,29 @@ User Style Preferences (IMPORTANT - FOLLOW THESE EXACTLY IF PROVIDED):
 
 Return strict JSON with these keys:
 - tldr: 2-3 sentences on where things stand
-- follow_ups: array of outstanding promises or open threads
+- missed_follow_ups: array of promises we previously made but have NO record of completing (overdue/missed). Only include actual missed items.
+- follow_ups: array of normal open threads, upcoming actions, or resolved items
 - quirks: array of this contact's preferences or communication patterns
 - icebreaker: one suggested opening line based on real past context
 
-If the memory is thin (this is an early meeting), say so plainly instead of inventing detail.
+If the memory is thin, say so plainly instead of inventing detail.
 """
+
+def draft_followup_email(contact: str, latest_transcript: str) -> str:
+    prompt = f"""You are an executive assistant drafting a follow-up email to {contact} after a recent meeting.
+Use this transcript/notes from the meeting:
+{latest_transcript}
+
+Write a professional, concise follow-up email that:
+1. Thanks them for the time
+2. Summarizes the key decisions/discussion points
+3. Clearly lists the action items and next steps
+
+Output ONLY the email text (no subject line needed, just the body)."""
+    try:
+        return _call_gemini(MODEL, prompt)
+    except genai_errors.ServerError:
+        return _call_gemini(FALLBACK_MODEL, prompt)
 
 
 def _call_gemini(model: str, prompt: str, max_retries: int = 5) -> str:

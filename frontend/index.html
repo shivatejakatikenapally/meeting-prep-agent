@@ -25,6 +25,45 @@
     </div>
   </div>
   <p class="hero-sub">Built on Hindsight for HackWithHyderabad 3.0.</p>
+  <div class="calendar-widget" style="margin-top: 40px; padding: 20px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); text-align: left; max-width: 700px; margin-left: auto; margin-right: auto;">
+    <h3 style="margin-top:0;">📅 Schedule a Meeting</h3>
+    <p style="color: var(--muted); font-size: 0.9em; margin-bottom: 15px;">Add upcoming meetings here. Later, click <b>Sync</b> inside the tool to automatically pull today's meetings.</p>
+    <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+      <input type="text" id="cal-name" placeholder="Contact Name" style="flex:1; min-width: 150px; padding:8px; border-radius:4px; border:1px solid var(--muted); background:var(--paper); color:var(--ink);">
+      <input type="text" id="cal-company" placeholder="Company" style="flex:1; min-width: 150px; padding:8px; border-radius:4px; border:1px solid var(--muted); background:var(--paper); color:var(--ink);">
+      <input type="date" id="cal-date" style="padding:8px; border-radius:4px; border:1px solid var(--muted); background:var(--paper); color:var(--ink);">
+    </div>
+    <button onclick="addToCalendar()" class="btn" style="width: 100%;">Add to Calendar</button>
+    <div id="cal-status" style="margin-top: 10px; font-size: 0.9em; color: #5cb85c; text-align: center;"></div>
+  </div>
 </main>
+
+<script>
+  // Set today's date as default
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('cal-date').value = today;
+
+  function addToCalendar() {
+    const name = document.getElementById('cal-name').value;
+    const company = document.getElementById('cal-company').value;
+    const date = document.getElementById('cal-date').value;
+    
+    if (!name || !company || !date) {
+      alert("Please fill out Name, Company, and Date.");
+      return;
+    }
+    
+    let cal = JSON.parse(localStorage.getItem('mockCalendar') || '[]');
+    cal.push({ name, company, date });
+    localStorage.setItem('mockCalendar', JSON.stringify(cal));
+    
+    document.getElementById('cal-name').value = '';
+    document.getElementById('cal-company').value = '';
+    
+    const status = document.getElementById('cal-status');
+    status.innerText = `✅ Scheduled ${name} from ${company} for ${date}!`;
+    setTimeout(() => status.innerText = '', 3000);
+  }
+</script>
 </body>
 </html>

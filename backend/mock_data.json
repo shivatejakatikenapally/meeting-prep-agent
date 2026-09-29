@@ -44,6 +44,31 @@
       "name": "Sarah Jenkins",
       "company": "GreenEnergy Corp",
       "meetings": []
+    },
+    {
+      "bank_id": "alice-wonderland-madhatter-co",
+      "name": "Alice Wonderland",
+      "company": "MadHatter Co"
+    },
+    {
+      "bank_id": "bruce-wayne-wayne-enterprises",
+      "name": "Bruce Wayne",
+      "company": "Wayne Enterprises"
+    },
+    {
+      "bank_id": "rahul-rahul-private-ltd",
+      "name": "rahul",
+      "company": "rahul private ltd"
+    },
+    {
+      "bank_id": "arjun-ark-pvt",
+      "name": "arjun",
+      "company": "ark.pvt"
+    },
+    {
+      "bank_id": "shashank-pvtltd",
+      "name": "shashank",
+      "company": "pvtltd"
     }
   ]
 }

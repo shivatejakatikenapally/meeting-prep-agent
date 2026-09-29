@@ -38,7 +38,7 @@ button, .btn {
   border-radius: var(--radius); padding: 0.75rem 1.25rem; font-size: 0.95rem; cursor: pointer;
 }
 .layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
-.sidebar { border-right: 1px solid var(--line); padding: 1.5rem; }
+.sidebar { border-right: 1px solid var(--line); padding: 1.5rem; display: flex; flex-direction: column; }
 .contact-item { padding: 0.75rem; border-radius: var(--radius); cursor: pointer; }
 .contact-item.active { background: var(--line); }
 .detail { padding: 2rem; max-width: 640px; }

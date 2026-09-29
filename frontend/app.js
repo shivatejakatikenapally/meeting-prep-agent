@@ -36,15 +36,30 @@ async function selectContact(bankId) {
   currentBank = bankId;
   document.querySelectorAll('.contact-item').forEach(el =>
     el.classList.toggle('active', el.dataset.bank === bankId));
+  
+  const draftContainer = document.getElementById('email-draft-container');
+  if (draftContainer) {
+    draftContainer.style.display = 'none';
+    draftContainer.innerHTML = '';
+  }
+  
   showBrief();
 }
 
 // ─── Briefing Tab (untouched) ────────────────────────────────
 
 function renderBriefContent(brief) {
+  let missedHtml = '';
+  if (brief.missed_follow_ups && brief.missed_follow_ups.length > 0) {
+    missedHtml = `
+      <h3 style="color: #d9534f;">⚠️ Missed / Overdue Follow-ups</h3>
+      <ul>${brief.missed_follow_ups.map(f => `<li style="color: #d9534f; border-left: 2px solid #d9534f; padding-left: 0.75rem;">${f}</li>`).join('')}</ul>
+    `;
+  }
   return `
     <p class="recalled">${brief.tldr}</p>
-    <h3>Follow-ups</h3>
+    ${missedHtml}
+    <h3>Open Threads & Resolved Follow-ups</h3>
     <ul>${(brief.follow_ups || []).map(f => `<li class="recalled">${f}</li>`).join('')}</ul>
     <h3>Quirks</h3>
     <ul>${(brief.quirks || []).map(q => `<li>${q}</li>`).join('')}</ul>
@@ -97,7 +112,7 @@ async function generateBrief() {
   el.innerHTML = `
     <div class="transcribing-indicator">
       <div class="spinner"></div>
-      <span>Recalling memory and generating brief... This may take a moment.</span>
+      <span>🔍 Hindsight recalling memory & 🧠 Gemini generating brief...</span>
     </div>
     ${cached ? '<button onclick="showBrief()" class="btn" style="margin-top: 15px;">← View Last Brief</button>' : ''}
   `;
@@ -295,7 +310,7 @@ async function uploadAndTranscribe(blob, filename) {
   status.innerHTML = `
     <div class="transcribing-indicator">
       <div class="spinner"></div>
-      <span>Uploading & transcribing with AI... This may take a moment.</span>
+      <span>🎙️ Google Gemini Multimodal transcribing audio... This may take a moment.</span>
     </div>
   `;
 
@@ -332,6 +347,30 @@ async function uploadAndTranscribe(blob, filename) {
 
 // ─── Transcript Logs Tab ───────────────────────────────────────
 
+async function draftEmail(btn) {
+  const container = document.getElementById('email-draft-container');
+  btn.disabled = true;
+  btn.innerText = "Drafting...";
+  container.style.display = 'block';
+  container.innerHTML = '<div class="spinner"></div><span style="margin-left:10px; color:var(--muted)">🧠 Drafting email with Google Gemini 3.5 Flash...</span>';
+  
+  try {
+    const res = await fetch(`/api/email/${currentBank}`);
+    if (!res.ok) throw new Error("Failed to draft email");
+    const data = await res.json();
+    container.innerHTML = `
+      <h4 style="margin-top:0; color:var(--accent);">Draft Follow-up Email</h4>
+      <div style="white-space: pre-wrap; font-family: sans-serif; font-size: 0.9em;">${data.email}</div>
+      <button onclick="document.getElementById('email-draft-container').style.display='none'" class="btn" style="margin-top: 15px; font-size: 0.8em; background: var(--line);">Dismiss</button>
+    `;
+  } catch (err) {
+    container.innerHTML = `<p style="color: #d9534f;">❌ ${err.message}</p>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "✉️ Draft Follow-up Email";
+  }
+}
+
 async function loadLogs() {
   const container = document.getElementById('logs-container');
   container.innerHTML = '<div class="spinner"></div>';
@@ -353,7 +392,47 @@ async function loadLogs() {
   }
 }
 
-// ─── New Contact ─────────────────────────────────────────────
+// ─── New Contact & Sync Calendar ──────────────────────────────
+
+async function syncCalendar(btn) {
+  btn.disabled = true;
+  btn.innerText = "Syncing...";
+  
+  try {
+    let cal = JSON.parse(localStorage.getItem('mockCalendar') || '[]');
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Filter for today's meetings
+    const todaysMeetings = cal.filter(m => m.date === today);
+    const futureMeetings = cal.filter(m => m.date !== today);
+    
+    if (todaysMeetings.length === 0) {
+      alert("No meetings scheduled for today in your Calendar.");
+      return;
+    }
+
+    let addedCount = 0;
+    for (const m of todaysMeetings) {
+      const res = await fetch('/api/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: m.name, company: m.company })
+      });
+      if (res.ok) addedCount++;
+    }
+
+    // Keep only the future meetings in storage
+    localStorage.setItem('mockCalendar', JSON.stringify(futureMeetings));
+    
+    await loadContacts();
+    alert(`Successfully synced ${addedCount} meeting(s) for today!`);
+  } catch (err) {
+    alert("Failed to sync calendar");
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "📅 Sync";
+  }
+}
 
 async function saveNewContact() {
   const name = document.getElementById('new-contact-name').value;
